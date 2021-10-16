@@ -1,6 +1,7 @@
 import { PartialRootState } from './configureStore';
 
 import { initialUIState, UIState } from '../store/reducers/UI';
+import { initialMapState, MapState } from './reducers/Map';
 
 const getPreloadedUIState = (): UIState => {
     return {
@@ -8,9 +9,16 @@ const getPreloadedUIState = (): UIState => {
     };
 };
 
+const getPreloadedMapState = (): MapState => {
+    return {
+        ...initialMapState,
+    };
+};
+
 const getPreloadedState = (): PartialRootState => {
     return {
         UI: getPreloadedUIState(),
+        Map: getPreloadedMapState(),
     };
 };
 

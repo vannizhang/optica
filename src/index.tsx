@@ -8,13 +8,7 @@ import configureAppStore, { getPreloadedState } from './store/configureStore';
 
 import AppContextProvider from './contexts/AppContextProvider';
 
-import { setDefaultOptions } from 'esri-loader';
-
-import { DemoPage, RootPage } from './pages';
-
-setDefaultOptions({
-    url: 'https://js.arcgis.com/next/',
-});
+import { AppLayout } from './components';
 
 (async () => {
     const preloadedState = getPreloadedState();
@@ -23,7 +17,7 @@ setDefaultOptions({
         <React.StrictMode>
             <ReduxProvider store={configureAppStore(preloadedState)}>
                 <AppContextProvider>
-                    <DemoPage />
+                    <AppLayout />
                 </AppContextProvider>
             </ReduxProvider>
         </React.StrictMode>,

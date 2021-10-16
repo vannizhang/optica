@@ -7,31 +7,36 @@ import {
 
 import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
+type MapPanelsInfo = {
+    direction?: string;
+    num?: number;
+};
+
 export type UIState = {
-    fullscreenMap?: boolean;
+    mapPanelsInfo?: MapPanelsInfo;
 };
 
 export const initialUIState: UIState = {
-    fullscreenMap: false,
+    mapPanelsInfo: null,
 };
 
 const slice = createSlice({
     name: 'UI',
     initialState: initialUIState,
     reducers: {
-        isFullscreenMapToggled: (state) => {
-            state.fullscreenMap = !state.fullscreenMap;
+        mapPanelsInfoChanged: (state, action: PayloadAction<MapPanelsInfo>) => {
+            state.mapPanelsInfo = action.payload;
         },
     },
 });
 
 const { reducer } = slice;
 
-export const { isFullscreenMapToggled } = slice.actions;
+export const { mapPanelsInfoChanged } = slice.actions;
 
-export const fullscreenMapSelector = createSelector(
-    (state: RootState) => state.UI.fullscreenMap,
-    (fullscreenMap) => fullscreenMap
+export const mapPanelsInfoSelector = createSelector(
+    (state: RootState) => state.UI.mapPanelsInfo,
+    (mapPanelsInfo) => mapPanelsInfo
 );
 
 export default reducer;
