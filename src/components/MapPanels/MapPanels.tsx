@@ -1,11 +1,38 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-// type Props = {
-//     center:
-// }
+import {
+    MapCenter,
+    mapCenterChanged,
+    MapCenterSelector,
+    webmapIdSelector,
+} from '../../store/reducers/Map';
+import { MapView } from '../ArcGIS';
 
-const MapPanels = () => {
-    return <div></div>;
+type Props = {
+    isActivePanel: boolean;
 };
 
-export default MapPanels;
+const MapPanel: React.FC<Props> = ({ isActivePanel }: Props) => {
+    const dispatch = useDispatch();
+
+    const webmapId = useSelector(webmapIdSelector);
+
+    const center = useSelector(MapCenterSelector);
+
+    return (
+        <MapView
+            webmapId={webmapId}
+            center={center}
+            isActiveMapPanel={isActivePanel}
+            centerOnChange={(center: MapCenter) => {
+                dispatch(mapCenterChanged(center));
+            }}
+            zoomOnChange={(zoom) => {
+                console.log(zoom);
+            }}
+        />
+    );
+};
+
+export default MapPanel;

@@ -7,8 +7,10 @@ import {
 
 import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
+type MapPanelsDirection = 'horizontal' | 'vertical';
+
 type MapPanelsInfo = {
-    direction?: string;
+    direction?: MapPanelsDirection;
     num?: number;
 };
 
@@ -17,7 +19,10 @@ export type UIState = {
 };
 
 export const initialUIState: UIState = {
-    mapPanelsInfo: null,
+    mapPanelsInfo: {
+        direction: 'horizontal',
+        num: 3,
+    },
 };
 
 const slice = createSlice({
