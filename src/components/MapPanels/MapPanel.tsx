@@ -6,14 +6,17 @@ import {
     mapCenterChanged,
     MapCenterSelector,
     webmapIdSelector,
+    updateZoomLevels,
 } from '../../store/reducers/Map';
 import { MapView } from '../ArcGIS';
 
 type Props = {
     isActivePanel: boolean;
+    zoom: number;
+    index: number;
 };
 
-const MapPanel: React.FC<Props> = ({ isActivePanel }: Props) => {
+const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
     const dispatch = useDispatch();
 
     const webmapId = useSelector(webmapIdSelector);
@@ -24,12 +27,17 @@ const MapPanel: React.FC<Props> = ({ isActivePanel }: Props) => {
         <MapView
             webmapId={webmapId}
             center={center}
+            zoom={zoom}
             isActiveMapPanel={isActivePanel}
             centerOnChange={(center: MapCenter) => {
                 dispatch(mapCenterChanged(center));
             }}
-            zoomOnChange={(zoom) => {
-                console.log(zoom);
+            zoomOnChange={(newZoom) => {
+                if (newZoom === zoom) {
+                    return;
+                }
+
+                dispatch(updateZoomLevels(newZoom, index));
             }}
         />
     );

@@ -12,6 +12,7 @@ loadCss();
 interface Props {
     webmapId: string;
     center: MapCenter;
+    zoom: number;
     isActiveMapPanel: boolean;
     centerOnChange: (center: MapCenter) => void;
     zoomOnChange: (zoom: number) => void;
@@ -21,6 +22,7 @@ interface Props {
 const MapView: React.FC<Props> = ({
     webmapId,
     center,
+    zoom,
     isActiveMapPanel,
     centerOnChange,
     zoomOnChange,
@@ -50,6 +52,7 @@ const MapView: React.FC<Props> = ({
                         id: webmapId,
                     },
                 }),
+                zoom,
                 center: [lon, lat],
             });
 
@@ -88,7 +91,9 @@ const MapView: React.FC<Props> = ({
                     return;
                 }
 
-                zoomOnChange(mapView.zoom);
+                if (isActiveMapRef.current) {
+                    zoomOnChange(mapView.zoom);
+                }
 
                 // console.log(mapView.scale)
 
@@ -128,10 +133,31 @@ const MapView: React.FC<Props> = ({
 
         const { lon, lat } = center;
 
-        mapView.goTo({
-            center: [lon, lat],
-        });
+        mapView.goTo(
+            {
+                center: [lon, lat],
+            },
+            {
+                duration: 100,
+            }
+        );
     }, [center, mapView]);
+
+    useEffect(() => {
+        if (!mapView) {
+            return;
+        }
+
+        // console.log(mapView.zoom, zoom)
+
+        if (mapView.zoom === zoom) {
+            return;
+        }
+
+        mapView.goTo({
+            zoom,
+        });
+    }, [zoom]);
 
     useEffect(() => {
         isActiveMapRef.current = isActiveMapPanel;
