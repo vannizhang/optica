@@ -30,7 +30,6 @@ export const initialMapState: MapState = {
     },
     zoom: 10,
     zoomLevels: [10, 12, 14],
-    relativeZoomLevels: [0, 2, 4],
     webmapId: WEB_MAP_ID,
 };
 
@@ -68,11 +67,7 @@ export const {
     indexOfActiveMapPanelChanged,
 } = slice.actions;
 
-const relativeZoomLevelLookup = [
-    [0, 2, 4],
-    [-2, 0, 2],
-    [-4, -2, 0],
-];
+const relativeZoomLevelLookup = [[0, 2, 4], [-2, 0, null], []];
 
 export const updateZoomLevels = (zoom: number, index: number) => (
     dispatch: StoreDispatch,
@@ -83,12 +78,24 @@ export const updateZoomLevels = (zoom: number, index: number) => (
 
     const relativeZoomLevels = relativeZoomLevelLookup[index];
 
-    console.log(zoom);
+    // console.log(zoom);
 
     const newZoomeLevels = zoomLevels.map((currZoom, i) => {
+        if (index === i) {
+            return zoom;
+        }
+
+        if (
+            relativeZoomLevels[i] === null ||
+            relativeZoomLevels[i] === undefined
+        ) {
+            return currZoom;
+        }
+
         return zoom + relativeZoomLevels[i];
     });
-    console.log(zoomLevels, newZoomeLevels);
+
+    // console.log(zoomLevels, newZoomeLevels);
 
     dispatch(zoomLevelsChanged(newZoomeLevels));
 };

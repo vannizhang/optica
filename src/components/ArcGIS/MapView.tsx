@@ -85,7 +85,7 @@ const MapView: React.FC<Props> = ({
             });
 
             watchUtils.whenTrue(mapView, 'stationary', () => {
-                // console.log('mapview is stationary', mapView.center, mapView.zoom);
+                // console.log('mapview is stationary', mapView.zoom);
 
                 if (mapView.zoom === -1) {
                     return;
@@ -147,8 +147,6 @@ const MapView: React.FC<Props> = ({
         if (!mapView) {
             return;
         }
-
-        // console.log(mapView.zoom, zoom)
 
         if (mapView.zoom === zoom) {
             return;

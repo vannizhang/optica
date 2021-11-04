@@ -33,10 +33,6 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
                 dispatch(mapCenterChanged(center));
             }}
             zoomOnChange={(newZoom) => {
-                if (newZoom === zoom) {
-                    return;
-                }
-
                 dispatch(updateZoomLevels(newZoom, index));
             }}
         />
