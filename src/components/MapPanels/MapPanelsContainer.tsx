@@ -3,15 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     indexOfActiveMapPanelChanged,
     indexOfActiveMapPanelSelector,
+    relativeZoomLevelsSelector,
+    toggleLockRelativeZoomLevels,
     zoomLevelsSelector,
 } from '../../store/reducers/Map';
 import { mapPanelsInfoSelector } from '../../store/reducers/UI';
 import MapPanel from './MapPanel';
+import classnames from 'classnames';
+import ZoomLock from './ZoomLock';
+import { numberFns } from 'helper-toolkit-ts';
 
 const MapPanelsContainer = () => {
     const dispatch = useDispatch();
 
-    const panelsInfo = useSelector(mapPanelsInfoSelector);
+    const { num, direction } = useSelector(mapPanelsInfoSelector);
 
     const idxOfActiveMapPanel = useSelector(indexOfActiveMapPanelSelector);
 
@@ -19,17 +24,21 @@ const MapPanelsContainer = () => {
 
     const zoomLevels = useSelector(zoomLevelsSelector);
 
+    const relativeZoomLevels = useSelector(relativeZoomLevelsSelector);
+
     const getPanels = () => {
-        const { num } = panelsInfo;
+        // const { num } = panelsInfo;
 
         const panels = [];
 
         for (let i = 0; i < num; i++) {
             const zoom = zoomLevels[i];
 
+            const shouldShowZoomLock = i < num - 1;
+
             panels.push(
                 <div
-                    className="flex-grow relative"
+                    className="relative w-1/3"
                     key={i}
                     onMouseEnter={() => {
                         dispatch(indexOfActiveMapPanelChanged(i));
@@ -40,6 +49,19 @@ const MapPanelsContainer = () => {
                         isActivePanel={idxOfActiveMapPanel === i}
                         zoom={zoom}
                     />
+
+                    {shouldShowZoomLock && (
+                        <ZoomLock
+                            isUnlocked={
+                                relativeZoomLevels[i] === null ||
+                                relativeZoomLevels[i + 1] === null
+                            }
+                            onClick={() => {
+                                // console.log(i)
+                                dispatch(toggleLockRelativeZoomLevels(i));
+                            }}
+                        />
+                    )}
                 </div>
             );
         }
@@ -56,7 +78,15 @@ const MapPanelsContainer = () => {
 
     // }, [idxOfActiveMapPanel]);
 
-    return <div className="flex h-screen">{getPanels()}</div>;
+    return (
+        <div
+            className={classnames('flex h-screen', {
+                'flex-col': direction === 'vertical',
+            })}
+        >
+            {getPanels()}
+        </div>
+    );
 };
 
 export default MapPanelsContainer;

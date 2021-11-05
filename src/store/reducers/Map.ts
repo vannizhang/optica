@@ -30,6 +30,7 @@ export const initialMapState: MapState = {
     },
     zoom: 10,
     zoomLevels: [10, 12, 14],
+    relativeZoomLevels: [-2, 0, 2],
     webmapId: WEB_MAP_ID,
 };
 
@@ -49,6 +50,9 @@ const slice = createSlice({
         zoomLevelsChanged: (state, action: PayloadAction<number[]>) => {
             state.zoomLevels = action.payload;
         },
+        relativeZoomLevelsChanged: (state, action: PayloadAction<number[]>) => {
+            state.relativeZoomLevels = action.payload;
+        },
         indexOfActiveMapPanelChanged: (
             state,
             action: PayloadAction<number>
@@ -64,36 +68,73 @@ export const {
     webmapIdChanged,
     mapCenterChanged,
     zoomLevelsChanged,
+    relativeZoomLevelsChanged,
     indexOfActiveMapPanelChanged,
 } = slice.actions;
 
-const relativeZoomLevelLookup = [[0, 2, 4], [-2, 0, null], []];
-
-export const updateZoomLevels = (zoom: number, index: number) => (
+export const toggleLockRelativeZoomLevels = (mapPanelIndex: number) => (
     dispatch: StoreDispatch,
     getState: StoreGetState
 ) => {
     const { Map } = getState();
-    const { zoomLevels } = Map;
+    const { zoomLevels, relativeZoomLevels } = Map;
 
-    const relativeZoomLevels = relativeZoomLevelLookup[index];
+    const shouldUnlock =
+        relativeZoomLevels[mapPanelIndex] !== null &&
+        relativeZoomLevels[mapPanelIndex + 1] !== null;
 
-    // console.log(zoom);
+    const newRelativeZoomLevels = [...relativeZoomLevels];
+
+    if (mapPanelIndex === 0) {
+        newRelativeZoomLevels[0] = shouldUnlock
+            ? null
+            : zoomLevels[0] - zoomLevels[1];
+    } else if (mapPanelIndex === 1) {
+        newRelativeZoomLevels[2] = shouldUnlock
+            ? null
+            : zoomLevels[2] - zoomLevels[1];
+    }
+
+    dispatch(relativeZoomLevelsChanged(newRelativeZoomLevels));
+};
+
+export const updateZoomLevels = (zoom: number, mapPanelIndex: number) => (
+    dispatch: StoreDispatch,
+    getState: StoreGetState
+) => {
+    const { Map } = getState();
+    const { zoomLevels, relativeZoomLevels } = Map;
+
+    // lock && lock: [-2, 0, 2]
+    // unlock && lock: [null, 0, 2]
+    // lock && unlock: [-2, 0, null]
+    // unlock && unlock: [null, 0, null]
+
+    const targetVal = relativeZoomLevels[mapPanelIndex];
+
+    const adjustedRelativeZoomLevels = relativeZoomLevels.map((val) => {
+        if (val === null || targetVal === null) {
+            return null;
+        }
+
+        return val - targetVal;
+    });
+
+    // console.log(adjustedRelativeZoomLevels)
 
     const newZoomeLevels = zoomLevels.map((currZoom, i) => {
-        if (index === i) {
+        if (mapPanelIndex === i) {
             return zoom;
         }
 
-        if (
-            relativeZoomLevels[i] === null ||
-            relativeZoomLevels[i] === undefined
-        ) {
+        if (adjustedRelativeZoomLevels[i] === null) {
             return currZoom;
         }
 
-        return zoom + relativeZoomLevels[i];
+        return zoom + adjustedRelativeZoomLevels[i];
     });
+
+    // console.log(newZoomeLevels)
 
     // console.log(zoomLevels, newZoomeLevels);
 
@@ -113,6 +154,11 @@ export const MapCenterSelector = createSelector(
 export const zoomLevelsSelector = createSelector(
     (state: RootState) => state.Map.zoomLevels,
     (zoomLevels) => zoomLevels
+);
+
+export const relativeZoomLevelsSelector = createSelector(
+    (state: RootState) => state.Map.relativeZoomLevels,
+    (relativeZoomLevels) => relativeZoomLevels
 );
 
 export const indexOfActiveMapPanelSelector = createSelector(
