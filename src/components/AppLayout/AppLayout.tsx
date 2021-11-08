@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { MapPanels } from '../';
+import { MapPanels, ControlPanel, ControlPanelToggleBtn } from '../';
 
 const AppLayout = () => {
     return (
-        <div>
+        <>
             <MapPanels />
-        </div>
+            <ControlPanel />
+            <ControlPanelToggleBtn />
+        </>
     );
 };
 

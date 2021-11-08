@@ -11,12 +11,13 @@ import { mapPanelsInfoSelector } from '../../store/reducers/UI';
 import MapPanel from './MapPanel';
 import classnames from 'classnames';
 import ZoomLock from './ZoomLock';
-import { numberFns } from 'helper-toolkit-ts';
 
 const MapPanelsContainer = () => {
     const dispatch = useDispatch();
 
     const { num, direction } = useSelector(mapPanelsInfoSelector);
+
+    const isHorizontal = direction === 'horizontal';
 
     const idxOfActiveMapPanel = useSelector(indexOfActiveMapPanelSelector);
 
@@ -36,9 +37,16 @@ const MapPanelsContainer = () => {
 
             const shouldShowZoomLock = i < num - 1;
 
+            const classNames = classnames('relative', {
+                'h-1/2': !isHorizontal && num === 2,
+                'h-1/3': !isHorizontal && num === 3,
+                'w-1/2': isHorizontal && num === 2,
+                'w-1/3': isHorizontal && num === 3,
+            });
+
             panels.push(
                 <div
-                    className="relative w-1/3"
+                    className={classNames}
                     key={i}
                     onMouseEnter={() => {
                         dispatch(indexOfActiveMapPanelChanged(i));
@@ -52,6 +60,7 @@ const MapPanelsContainer = () => {
 
                     {shouldShowZoomLock && (
                         <ZoomLock
+                            placeOnLeftSide={direction === 'vertical'}
                             isUnlocked={
                                 relativeZoomLevels[i] === null ||
                                 relativeZoomLevels[i + 1] === null
@@ -81,7 +90,7 @@ const MapPanelsContainer = () => {
     return (
         <div
             className={classnames('flex h-screen', {
-                'flex-col': direction === 'vertical',
+                'flex-col': !isHorizontal,
             })}
         >
             {getPanels()}

@@ -7,15 +7,16 @@ import {
 
 import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
-type MapPanelsDirection = 'horizontal' | 'vertical';
+export type MapPanelsDirection = 'horizontal' | 'vertical';
 
-type MapPanelsInfo = {
+export type MapPanelsInfo = {
     direction?: MapPanelsDirection;
     num?: number;
 };
 
 export type UIState = {
     mapPanelsInfo?: MapPanelsInfo;
+    isControlPanelVisible?: boolean;
 };
 
 export const initialUIState: UIState = {
@@ -23,6 +24,7 @@ export const initialUIState: UIState = {
         direction: 'horizontal',
         num: 3,
     },
+    isControlPanelVisible: false,
 };
 
 const slice = createSlice({
@@ -32,16 +34,27 @@ const slice = createSlice({
         mapPanelsInfoChanged: (state, action: PayloadAction<MapPanelsInfo>) => {
             state.mapPanelsInfo = action.payload;
         },
+        isControlPanelVisibleToggled: (state) => {
+            state.isControlPanelVisible = !state.isControlPanelVisible;
+        },
     },
 });
 
 const { reducer } = slice;
 
-export const { mapPanelsInfoChanged } = slice.actions;
+export const {
+    mapPanelsInfoChanged,
+    isControlPanelVisibleToggled,
+} = slice.actions;
 
 export const mapPanelsInfoSelector = createSelector(
     (state: RootState) => state.UI.mapPanelsInfo,
     (mapPanelsInfo) => mapPanelsInfo
+);
+
+export const isControlPanelVisibleSelector = createSelector(
+    (state: RootState) => state.UI.isControlPanelVisible,
+    (isControlPanelVisible) => isControlPanelVisible
 );
 
 export default reducer;
