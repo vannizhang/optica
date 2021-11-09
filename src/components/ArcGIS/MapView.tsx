@@ -4,6 +4,7 @@ import { loadModules, loadCss } from 'esri-loader';
 import IMapView from 'esri/views/MapView';
 import IWebMap from 'esri/WebMap';
 import IPoint from 'esri/geometry/Point';
+import IExtent from 'esri/geometry/Extent';
 import IwatchUtils from 'esri/core/watchUtils';
 import { MapCenter } from '../../store/reducers/Map';
 
@@ -16,6 +17,7 @@ interface Props {
     isActiveMapPanel: boolean;
     centerOnChange: (center: MapCenter) => void;
     zoomOnChange: (zoom: number) => void;
+    extentOnChange: (extent: IExtent) => void;
     children?: React.ReactNode;
 }
 
@@ -26,6 +28,7 @@ const MapView: React.FC<Props> = ({
     isActiveMapPanel,
     centerOnChange,
     zoomOnChange,
+    extentOnChange,
     children,
 }: Props) => {
     const mapDivRef = React.useRef<HTMLDivElement>();
@@ -113,7 +116,9 @@ const MapView: React.FC<Props> = ({
                     zoomOnChange(mapView.zoom);
                 }
 
-                // console.log(mapView.scale)
+                extentOnChange(mapView.extent);
+
+                // console.log('mapview is stationary')
 
                 // const centerLocation = {
                 //     lat:

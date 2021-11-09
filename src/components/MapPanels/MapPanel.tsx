@@ -7,8 +7,12 @@ import {
     MapCenterSelector,
     webmapIdSelector,
     updateZoomLevels,
+    updateExtents,
+    extentsSelector,
 } from '../../store/reducers/Map';
+import { mapPanelsInfoSelector } from '../../store/reducers/UI';
 import { MapView } from '../ArcGIS';
+import ExtentBox from './ExtentBox';
 
 type Props = {
     isActivePanel: boolean;
@@ -23,6 +27,30 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
 
     const center = useSelector(MapCenterSelector);
 
+    const extents = useSelector(extentsSelector);
+
+    const panelInfo = useSelector(mapPanelsInfoSelector);
+
+    const getExtentBoxes = () => {
+        const extentBoxes: JSX.Element[] = [];
+
+        for (let i = index - 1; i <= index + 1; i++) {
+            if (i === index || i === panelInfo.num) {
+                continue;
+            }
+
+            if (extents[i]) {
+                const extent = JSON.parse(extents[i]);
+
+                extentBoxes.push(
+                    <ExtentBox key={extents[i]} extent={extent} />
+                );
+            }
+        }
+
+        return extentBoxes;
+    };
+
     return (
         <MapView
             webmapId={webmapId}
@@ -35,7 +63,13 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
             zoomOnChange={(newZoom) => {
                 dispatch(updateZoomLevels(newZoom, index));
             }}
-        />
+            extentOnChange={(extent) => {
+                // console.log('extent on change', extent)
+                dispatch(updateExtents(extent, index));
+            }}
+        >
+            {getExtentBoxes()}
+        </MapView>
     );
 };
 

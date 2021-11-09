@@ -8,6 +8,8 @@ import { WEB_MAP_ID, WEB_MAPS } from '../../constants/map';
 
 import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
+import IExtent from 'esri/geometry/Extent';
+
 export type MapCenter = {
     lat?: number;
     lon?: number;
@@ -19,6 +21,8 @@ export type MapState = {
     zoom?: number;
     zoomLevels?: number[];
     relativeZoomLevels?: number[];
+    // extents JSON of each map panel as an array of strings
+    extents?: string[];
     webmapId?: string;
 };
 
@@ -31,6 +35,7 @@ export const initialMapState: MapState = {
     zoom: 10,
     zoomLevels: [10, 12, 14],
     relativeZoomLevels: [-2, 0, 2],
+    extents: [],
     webmapId: WEB_MAPS[0].id,
 };
 
@@ -44,9 +49,9 @@ const slice = createSlice({
         mapCenterChanged: (state, action: PayloadAction<MapCenter>) => {
             state.center = action.payload;
         },
-        // mapZoomChanged: (state, action: PayloadAction<number>) => {
-        //     state.zoom = action.payload;
-        // },
+        extentsChanged: (state, action: PayloadAction<string[]>) => {
+            state.extents = action.payload;
+        },
         zoomLevelsChanged: (state, action: PayloadAction<number[]>) => {
             state.zoomLevels = action.payload;
         },
@@ -70,6 +75,7 @@ export const {
     zoomLevelsChanged,
     relativeZoomLevelsChanged,
     indexOfActiveMapPanelChanged,
+    extentsChanged,
 } = slice.actions;
 
 export const toggleLockRelativeZoomLevels = (mapPanelIndex: number) => (
@@ -141,6 +147,20 @@ export const updateZoomLevels = (zoom: number, mapPanelIndex: number) => (
     dispatch(zoomLevelsChanged(newZoomeLevels));
 };
 
+export const updateExtents = (extent: IExtent, mapPanelIndex: number) => (
+    dispatch: StoreDispatch,
+    getState: StoreGetState
+) => {
+    const { Map } = getState();
+    const { extents } = Map;
+
+    const newExtents = [...extents];
+
+    newExtents[mapPanelIndex] = JSON.stringify(extent.toJSON());
+
+    dispatch(extentsChanged(newExtents));
+};
+
 export const webmapIdSelector = createSelector(
     (state: RootState) => state.Map.webmapId,
     (webmapId) => webmapId
@@ -149,6 +169,11 @@ export const webmapIdSelector = createSelector(
 export const MapCenterSelector = createSelector(
     (state: RootState) => state.Map.center,
     (center) => center
+);
+
+export const extentsSelector = createSelector(
+    (state: RootState) => state.Map.extents,
+    (extents) => extents
 );
 
 export const zoomLevelsSelector = createSelector(

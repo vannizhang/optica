@@ -6,12 +6,12 @@ export const WEB_MAP_ID = 'd507d08f4959438687caf2914854d8d4';
 
 export const WEB_MAPS = [
     {
-        title: 'Imagery',
+        title: 'Imagery With Label',
         id: 'd507d08f4959438687caf2914854d8d4',
     },
     {
-        title: 'Imagery With Label',
-        id: 'd507d08f4959438687caf2914854d8d4',
+        title: 'Imagery',
+        id: '5226eb89ecb94252aee274671241c8d1',
     },
     {
         title: 'Human Geo Light',
