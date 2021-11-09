@@ -64,6 +64,24 @@ const MapView: React.FC<Props> = ({
         }
     };
 
+    const updateWebmap = async () => {
+        type Modules = [typeof IWebMap];
+
+        try {
+            const [WebMap] = await (loadModules(['esri/WebMap']) as Promise<
+                Modules
+            >);
+
+            mapView.map = new WebMap({
+                portalItem: {
+                    id: webmapId,
+                },
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const addWatchEvent = async () => {
         type Modules = [typeof IwatchUtils];
 
@@ -160,6 +178,14 @@ const MapView: React.FC<Props> = ({
     useEffect(() => {
         isActiveMapRef.current = isActiveMapPanel;
     }, [isActiveMapPanel]);
+
+    useEffect(() => {
+        if (!mapView) {
+            return;
+        }
+
+        updateWebmap();
+    }, [webmapId]);
 
     return (
         <>

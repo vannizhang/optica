@@ -4,7 +4,7 @@ import {
     PayloadAction,
     // createAsyncThunk
 } from '@reduxjs/toolkit';
-import { WEB_MAP_ID } from '../../constants/map';
+import { WEB_MAP_ID, WEB_MAPS } from '../../constants/map';
 
 import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
@@ -31,7 +31,7 @@ export const initialMapState: MapState = {
     zoom: 10,
     zoomLevels: [10, 12, 14],
     relativeZoomLevels: [-2, 0, 2],
-    webmapId: WEB_MAP_ID,
+    webmapId: WEB_MAPS[0].id,
 };
 
 const slice = createSlice({
