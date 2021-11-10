@@ -3,6 +3,12 @@ import React, { CSSProperties, FC, useEffect, useRef, useState } from 'react';
 import IMapView from 'esri/views/MapView';
 import IPoint from 'esri/geometry/Point';
 import { loadModules } from 'esri-loader';
+import { useSelector } from 'react-redux';
+import {
+    relativeZoomLevelsSelector,
+    zoomLevelsSelector,
+} from '../../store/reducers/Map';
+import { usePrevious } from '../../hooks/usePrevious';
 
 type IExtent = {
     xmin: number;
@@ -27,10 +33,21 @@ type BoxPosition = {
 const ExtentBox: FC<Props> = ({ extent, mapView }: Props) => {
     const containerRef = useRef<HTMLDivElement>();
 
+    const relativeZoomLevels = useSelector(relativeZoomLevelsSelector);
+
+    // const zoomLevels = useSelector(zoomLevelsSelector)
+
     const [pos, setPos] = useState<BoxPosition>();
 
     const calcPos = async () => {
         type Modules = [typeof IPoint];
+
+        console.log('calling calcPos', extent);
+
+        if (!extent) {
+            setPos(null);
+            return;
+        }
 
         const { xmin, ymin, xmax, ymax, spatialReference } = extent;
 
@@ -54,16 +71,6 @@ const ExtentBox: FC<Props> = ({ extent, mapView }: Props) => {
             const screenPointMin = mapView.toScreen(pointMin);
             const screenPointMax = mapView.toScreen(pointMax);
 
-            if (
-                screenPointMin.x < 0 ||
-                screenPointMin.y < 0 ||
-                screenPointMax.x < 0 ||
-                screenPointMax.y < 0
-            ) {
-                setPos(null);
-                return;
-            }
-
             setPos({
                 left: screenPointMin.x,
                 top: screenPointMax.y,
@@ -76,28 +83,36 @@ const ExtentBox: FC<Props> = ({ extent, mapView }: Props) => {
     };
 
     useEffect(() => {
-        if (mapView && extent) {
-            calcPos();
-            // console.log('extent changed', extent)
+        calcPos();
+    }, [relativeZoomLevels]);
+
+    const getStyle = (): CSSProperties => {
+        const { top, left, height, width } = pos;
+
+        if (top < 0 || left < 0) {
+            return {
+                display: 'none',
+            };
         }
-    }, [extent]);
+
+        return {
+            top,
+            left,
+            height,
+            width,
+            display: 'block',
+        };
+    };
 
     if (!mapView || !pos) {
         return null;
     }
 
-    const { top, left, height, width } = pos;
-
     return (
         <div
             ref={containerRef}
             className="absolute border-2 border-red-500 pointer-events-none"
-            style={{
-                top,
-                left,
-                height,
-                width,
-            }}
+            style={getStyle()}
         ></div>
     );
 };

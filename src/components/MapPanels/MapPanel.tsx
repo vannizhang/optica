@@ -43,7 +43,7 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
                 const extent = JSON.parse(extents[i]);
 
                 extentBoxes.push(
-                    <ExtentBox key={extents[i]} extent={extent} />
+                    <ExtentBox key={extents[i] + i} extent={extent} />
                 );
             }
         }
