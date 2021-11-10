@@ -35,6 +35,8 @@ const MapView: React.FC<Props> = ({
 
     const isActiveMapRef = useRef<boolean>(isActiveMapPanel);
 
+    const shouldTriggerExtentOnChangeRef = useRef<boolean>(true);
+
     const [mapView, setMapView] = React.useState<IMapView>(null);
 
     const initMapView = async () => {
@@ -93,6 +95,11 @@ const MapView: React.FC<Props> = ({
                 'esri/core/watchUtils',
             ]) as Promise<Modules>);
 
+            // watchUtils.watch(mapView, 'zoom', (zoom: number) => {
+            //     // console.log('zoom on change', zoom)
+            //     shouldTriggerExtentOnChangeRef.current = true;
+            // });
+
             watchUtils.watch(mapView, 'center', (center: IPoint) => {
                 // console.log('map center on change', center)
                 const { longitude, latitude } = center;
@@ -116,23 +123,10 @@ const MapView: React.FC<Props> = ({
                     zoomOnChange(mapView.zoom);
                 }
 
-                extentOnChange(mapView.extent);
-
-                // console.log('mapview is stationary')
-
-                // const centerLocation = {
-                //     lat:
-                //         mapView.center && mapView.center.latitude
-                //             ? +mapView.center.latitude.toFixed(3)
-                //             : 0,
-                //     lon:
-                //         mapView.center && mapView.center.longitude
-                //             ? +mapView.center.longitude.toFixed(3)
-                //             : 0,
-                //     zoom: mapView.zoom,
-                // };
-
-                // updateMapLocation(centerLocation);
+                if (shouldTriggerExtentOnChangeRef.current) {
+                    shouldTriggerExtentOnChangeRef.current = false;
+                    extentOnChange(mapView.extent);
+                }
             });
         } catch (err) {
             console.error(err);
@@ -174,6 +168,8 @@ const MapView: React.FC<Props> = ({
         if (mapView.zoom === zoom) {
             return;
         }
+
+        shouldTriggerExtentOnChangeRef.current = true;
 
         mapView.goTo({
             zoom,

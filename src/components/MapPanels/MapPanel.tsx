@@ -27,7 +27,7 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
 
     const center = useSelector(MapCenterSelector);
 
-    const extents = useSelector(extentsSelector);
+    // const extents = useSelector(extentsSelector);
 
     const panelInfo = useSelector(mapPanelsInfoSelector);
 
@@ -35,17 +35,25 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
         const extentBoxes: JSX.Element[] = [];
 
         for (let i = index - 1; i <= index + 1; i++) {
-            if (i === index || i === panelInfo.num) {
+            if (i === index || i === panelInfo.num || i < 0) {
                 continue;
             }
 
-            if (extents[i]) {
-                const extent = JSON.parse(extents[i]);
+            // if (extents[i]) {
+            //     const extent = JSON.parse(extents[i]);
 
-                extentBoxes.push(
-                    <ExtentBox key={extents[i] + i} extent={extent} />
-                );
-            }
+            //     extentBoxes.push(
+            //         <ExtentBox key={extents[i] + i} extent={extent} />
+            //     );
+            // }
+
+            extentBoxes.push(
+                <ExtentBox
+                    key={i}
+                    indexOfContainerMap={index}
+                    indexOfTargetMap={i}
+                />
+            );
         }
 
         return extentBoxes;

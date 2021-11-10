@@ -111,6 +111,10 @@ export const updateZoomLevels = (zoom: number, mapPanelIndex: number) => (
     const { Map } = getState();
     const { zoomLevels, relativeZoomLevels } = Map;
 
+    if (zoomLevels[mapPanelIndex] === zoom) {
+        return;
+    }
+
     // lock && lock: [-2, 0, 2]
     // unlock && lock: [null, 0, 2]
     // lock && unlock: [-2, 0, null]

@@ -5,6 +5,7 @@ import IPoint from 'esri/geometry/Point';
 import { loadModules } from 'esri-loader';
 import { useSelector } from 'react-redux';
 import {
+    extentsSelector,
     relativeZoomLevelsSelector,
     zoomLevelsSelector,
 } from '../../store/reducers/Map';
@@ -19,7 +20,9 @@ type IExtent = {
 };
 
 type Props = {
-    extent: IExtent;
+    // extent: IExtent;
+    indexOfTargetMap: number;
+    indexOfContainerMap: number;
     mapView?: IMapView;
 };
 
@@ -30,17 +33,28 @@ type BoxPosition = {
     width: number;
 };
 
-const ExtentBox: FC<Props> = ({ extent, mapView }: Props) => {
+const ExtentBox: FC<Props> = ({
+    // extent,
+    indexOfTargetMap,
+    indexOfContainerMap,
+    mapView,
+}: Props) => {
     const containerRef = useRef<HTMLDivElement>();
 
-    const relativeZoomLevels = useSelector(relativeZoomLevelsSelector);
+    const extents = useSelector(extentsSelector);
 
-    // const zoomLevels = useSelector(zoomLevelsSelector)
+    // const relativeZoomLevels = useSelector(relativeZoomLevelsSelector);
+
+    const zoomLevels = useSelector(zoomLevelsSelector);
+
+    const extentOfTargetMapRef = useRef<string>();
 
     const [pos, setPos] = useState<BoxPosition>();
 
-    const calcPos = async () => {
+    const calcPos = async (extentString: string) => {
         type Modules = [typeof IPoint];
+
+        const extent: IExtent = extentString ? JSON.parse(extentString) : null;
 
         console.log('calling calcPos', extent);
 
@@ -83,8 +97,18 @@ const ExtentBox: FC<Props> = ({ extent, mapView }: Props) => {
     };
 
     useEffect(() => {
-        calcPos();
-    }, [relativeZoomLevels]);
+        // console.log(zoomLevels)
+    }, [zoomLevels]);
+
+    useEffect(() => {
+        if (extentOfTargetMapRef.current === extents[indexOfTargetMap]) {
+            return;
+        }
+
+        extentOfTargetMapRef.current = extents[indexOfTargetMap];
+
+        calcPos(extentOfTargetMapRef.current);
+    }, [extents]);
 
     const getStyle = (): CSSProperties => {
         const { top, left, height, width } = pos;
