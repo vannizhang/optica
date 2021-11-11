@@ -1,75 +1,57 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { WEB_MAPS } from '../../constants/map';
-import { webmapIdChanged } from '../../store/reducers/Map';
-import {
-    MapPanelsDirection,
-    MapPanelsInfo,
-    mapPanelsInfoChanged,
-} from '../../store/reducers/UI';
+import { isControlPanelVisibleToggled } from '../../store/reducers/UI';
+import PanelConfiguration from './PanelConfiguration';
+import WebMapSelector from './WebMapSelector';
 
-const PanelConfiguration = () => {
-    const dispatch = useDispatch();
-
-    const onChangeHandler = (direction: MapPanelsDirection, num: number) => {
-        dispatch(mapPanelsInfoChanged({ direction, num }));
-    };
-
+const Title = () => {
     return (
-        <div>
-            <h5>Panel configuration</h5>
-            <ul className="cursor-pointer">
-                <li onClick={onChangeHandler.bind(undefined, 'horizontal', 2)}>
-                    horizontal-2
-                </li>
-                <li onClick={onChangeHandler.bind(undefined, 'horizontal', 3)}>
-                    horizontal-3
-                </li>
-                <li onClick={onChangeHandler.bind(undefined, 'vertical', 2)}>
-                    vertical-2
-                </li>
-                <li onClick={onChangeHandler.bind(undefined, 'vertical', 3)}>
-                    vertical-3
-                </li>
-            </ul>
+        <div className="text-xl">
+            <h5>
+                Living Atlas{' '}
+                <span className="font-medium text-white">Optica</span>
+            </h5>
         </div>
     );
 };
 
-const WebMapSelector = () => {
+const CloseBtn = () => {
     const dispatch = useDispatch();
 
-    const onChangeHandler = (id: string) => {
-        dispatch(webmapIdChanged(id));
-    };
-
-    const getOptions = () => {
-        return WEB_MAPS.map(({ title, id }) => {
-            return (
-                <div
-                    key={id}
-                    className="cursor-pointer"
-                    onClick={onChangeHandler.bind(null, id)}
-                >
-                    {title}
-                </div>
-            );
-        });
+    const onClickHandler = () => {
+        dispatch(isControlPanelVisibleToggled());
     };
 
     return (
-        <div className="ml-4">
-            <h5>Map</h5>
-            {getOptions()}
+        <div
+            className="absolute top-1 right-1 text-white cursor-pointer"
+            onClick={onClickHandler}
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+                height="32"
+                width="32"
+                className="fill-current"
+            >
+                <path d="M23.985 8.722L16.707 16l7.278 7.278-.707.707L16 16.707l-7.278 7.278-.707-.707L15.293 16 8.015 8.722l.707-.707L16 15.293l7.278-7.278z" />
+                <path fill="none" d="M0 0h32v32H0z" />
+            </svg>
         </div>
     );
 };
 
 const ControlPanel = () => {
     return (
-        <div className="absolute top-0 left-0 right-0 py-4 px-10 bg-black text-white z-10 flex">
-            <PanelConfiguration />
-            <WebMapSelector />
+        <div className="absolute top-0 left-0 right-0 py-2 pb-4 px-14 bg-black text-gray-200 z-10">
+            <Title />
+
+            <CloseBtn />
+
+            <div className="flex mt-2">
+                <PanelConfiguration />
+                <WebMapSelector />
+            </div>
         </div>
     );
 };
