@@ -56,7 +56,7 @@ const ExtentBox: FC<Props> = ({
 
         const extent: IExtent = extentString ? JSON.parse(extentString) : null;
 
-        console.log('calling calcPos', extent);
+        // console.log('calling calcPos', extent);
 
         if (!extent) {
             setPos(null);
@@ -104,6 +104,27 @@ const ExtentBox: FC<Props> = ({
         if (extentOfTargetMapRef.current === extents[indexOfTargetMap]) {
             return;
         }
+
+        // // check if the extent change is triggered by center change
+        // if(extentOfTargetMapRef.current){
+        //     // current extent
+        //     const ext1 = JSON.parse(extentOfTargetMapRef.current) as IExtent
+        //     // new extent
+        //     const ext2 = JSON.parse(extents[indexOfTargetMap]) as IExtent
+
+        //     const diffX1 = Math.floor(Math.abs(ext1.xmin - ext1.xmax));
+        //     const diffY1 = Math.floor(Math.abs(ext1.ymin - ext1.ymax));
+
+        //     const diffX2 = Math.floor(Math.abs(ext2.xmin - ext2.xmax));
+        //     const diffY2 = Math.floor(Math.abs(ext2.ymin - ext2.ymax));
+
+        //     if(
+        //         diffX1 === diffX2 &&
+        //         diffY1 === diffY2
+        //     ){
+        //         return;
+        //     }
+        // }
 
         extentOfTargetMapRef.current = extents[indexOfTargetMap];
 

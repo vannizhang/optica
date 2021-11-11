@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 
 import { loadModules, loadCss } from 'esri-loader';
 import IMapView from 'esri/views/MapView';
@@ -36,6 +36,8 @@ const MapView: React.FC<Props> = ({
     const isActiveMapRef = useRef<boolean>(isActiveMapPanel);
 
     const shouldTriggerExtentOnChangeRef = useRef<boolean>(true);
+
+    const mapContainerSizeRef = useRef<string>();
 
     const [mapView, setMapView] = React.useState<IMapView>(null);
 
@@ -113,8 +115,6 @@ const MapView: React.FC<Props> = ({
             });
 
             watchUtils.whenTrue(mapView, 'stationary', () => {
-                // console.log('mapview is stationary', mapView.zoom);
-
                 if (mapView.zoom === -1) {
                     return;
                 }
@@ -123,8 +123,15 @@ const MapView: React.FC<Props> = ({
                     zoomOnChange(mapView.zoom);
                 }
 
-                if (shouldTriggerExtentOnChangeRef.current) {
+                const containerSize = `${mapView.width}#${mapView.height}`;
+                // console.log(containerSize, mapContainerSizeRef.current)
+
+                if (
+                    shouldTriggerExtentOnChangeRef.current ||
+                    mapContainerSizeRef.current !== containerSize
+                ) {
                     shouldTriggerExtentOnChangeRef.current = false;
+                    mapContainerSizeRef.current = containerSize;
                     extentOnChange(mapView.extent);
                 }
             });
