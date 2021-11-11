@@ -9,7 +9,8 @@ import {
     relativeZoomLevelsSelector,
     zoomLevelsSelector,
 } from '../../store/reducers/Map';
-import { usePrevious } from '../../hooks/usePrevious';
+// import { usePrevious } from '../../hooks/usePrevious';
+import IwatchUtils from 'esri/core/watchUtils';
 
 type IExtent = {
     xmin: number;
@@ -45,9 +46,11 @@ const ExtentBox: FC<Props> = ({
 
     // const relativeZoomLevels = useSelector(relativeZoomLevelsSelector);
 
-    const zoomLevels = useSelector(zoomLevelsSelector);
+    // const zoomLevels = useSelector(zoomLevelsSelector);
 
     const extentOfTargetMapRef = useRef<string>();
+
+    const prevZoomRef = useRef<number>();
 
     const [pos, setPos] = useState<BoxPosition>();
 
@@ -56,7 +59,7 @@ const ExtentBox: FC<Props> = ({
 
         const extent: IExtent = extentString ? JSON.parse(extentString) : null;
 
-        // console.log('calling calcPos', extent);
+        console.log('calling calcPos', extent);
 
         if (!extent) {
             setPos(null);
@@ -96,35 +99,58 @@ const ExtentBox: FC<Props> = ({
         } catch (err) {}
     };
 
+    const addWatchEvent = async (mapView: IMapView) => {
+        type Modules = [typeof IwatchUtils];
+
+        try {
+            const [watchUtils] = await (loadModules([
+                'esri/core/watchUtils',
+            ]) as Promise<Modules>);
+
+            watchUtils.whenTrue(mapView, 'stationary', () => {
+                if (prevZoomRef.current !== mapView.zoom) {
+                    calcPos(extentOfTargetMapRef.current);
+                }
+
+                prevZoomRef.current = mapView.zoom;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // useEffect(() => {
+    //     // console.log(zoomLevels)
+    // }, [zoomLevels]);
+
     useEffect(() => {
-        // console.log(zoomLevels)
-    }, [zoomLevels]);
+        if (mapView) {
+            addWatchEvent(mapView);
+        }
+    }, [mapView]);
 
     useEffect(() => {
         if (extentOfTargetMapRef.current === extents[indexOfTargetMap]) {
             return;
         }
 
-        // // check if the extent change is triggered by center change
-        // if(extentOfTargetMapRef.current){
-        //     // current extent
-        //     const ext1 = JSON.parse(extentOfTargetMapRef.current) as IExtent
-        //     // new extent
-        //     const ext2 = JSON.parse(extents[indexOfTargetMap]) as IExtent
+        // check if the extent change is triggered by center change
+        if (extentOfTargetMapRef.current) {
+            // current extent
+            const ext1 = JSON.parse(extentOfTargetMapRef.current) as IExtent;
+            // new extent
+            const ext2 = JSON.parse(extents[indexOfTargetMap]) as IExtent;
 
-        //     const diffX1 = Math.floor(Math.abs(ext1.xmin - ext1.xmax));
-        //     const diffY1 = Math.floor(Math.abs(ext1.ymin - ext1.ymax));
+            const diffX1 = Math.floor(Math.abs(ext1.xmin - ext1.xmax));
+            const diffY1 = Math.floor(Math.abs(ext1.ymin - ext1.ymax));
 
-        //     const diffX2 = Math.floor(Math.abs(ext2.xmin - ext2.xmax));
-        //     const diffY2 = Math.floor(Math.abs(ext2.ymin - ext2.ymax));
+            const diffX2 = Math.floor(Math.abs(ext2.xmin - ext2.xmax));
+            const diffY2 = Math.floor(Math.abs(ext2.ymin - ext2.ymax));
 
-        //     if(
-        //         diffX1 === diffX2 &&
-        //         diffY1 === diffY2
-        //     ){
-        //         return;
-        //     }
-        // }
+            if (diffX1 === diffX2 && diffY1 === diffY2) {
+                return;
+            }
+        }
 
         extentOfTargetMapRef.current = extents[indexOfTargetMap];
 

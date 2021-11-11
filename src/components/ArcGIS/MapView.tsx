@@ -120,6 +120,7 @@ const MapView: React.FC<Props> = ({
                 }
 
                 if (isActiveMapRef.current) {
+                    extentOnChange(mapView.extent);
                     zoomOnChange(mapView.zoom);
                 }
 
