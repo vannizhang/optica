@@ -59,7 +59,7 @@ const ExtentBox: FC<Props> = ({
 
         const extent: IExtent = extentString ? JSON.parse(extentString) : null;
 
-        console.log('calling calcPos', extent);
+        // console.log('calling calcPos', extent);
 
         if (!extent) {
             setPos(null);

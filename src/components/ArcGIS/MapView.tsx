@@ -61,10 +61,20 @@ const MapView: React.FC<Props> = ({
                 }),
                 zoom,
                 center: [lon, lat],
+                navigation: {
+                    mouseWheelZoomEnabled: false,
+                    browserTouchPanEnabled: false,
+                },
             });
 
             view.when(() => {
                 setMapView(view);
+            });
+
+            view.on('mouse-wheel', function (event) {
+                // deltaY value is positive when wheel is scrolled up
+                // and it is negative when wheel is scrolled down.
+                console.log(event);
             });
         } catch (err) {
             console.error(err);
