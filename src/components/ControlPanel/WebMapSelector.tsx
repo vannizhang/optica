@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     WEB_MAP_ID_HUMAN_GEO_DARK,
@@ -18,7 +18,13 @@ import topo_thumbnail from '../../static/topo.jpg';
 import vibrant_thumbnail from '../../static/vibrant.png';
 import classnames from 'classnames';
 
-export const WEB_MAPS = [
+type WebMapInfo = {
+    title: string;
+    id: string;
+    thumbnail: any;
+};
+
+export const WEB_MAPS: WebMapInfo[] = [
     {
         title: 'Imagery With Label',
         id: WEB_MAP_ID_HYBRID,
@@ -51,6 +57,44 @@ export const WEB_MAPS = [
     },
 ];
 
+type PropsWebMapOption = {
+    data: WebMapInfo;
+    isActive: boolean;
+    onClick: (id: string) => void;
+};
+
+const WebMapOption: FC<PropsWebMapOption> = ({
+    data,
+    isActive,
+    onClick,
+}: PropsWebMapOption) => {
+    const { title, id, thumbnail } = data;
+
+    return (
+        <div key={id} className="flex items-center mb-2">
+            <div
+                className={classnames('cursor-pointer border', {
+                    'border-white': isActive,
+                    'border-gray-50': !isActive,
+                    'opacity-60': !isActive,
+                })}
+                onClick={onClick.bind(null, id)}
+                style={{
+                    height: 62,
+                    width: 62,
+                    background: `url(${thumbnail}) center center`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                }}
+            ></div>
+
+            <div className="ml-3">
+                <span className="text-sm">{title}</span>
+            </div>
+        </div>
+    );
+};
+
 const WebMapSelector = () => {
     const dispatch = useDispatch();
 
@@ -60,36 +104,35 @@ const WebMapSelector = () => {
 
     const activeWebmapId = useSelector(webmapIdSelector);
 
+    const groups: JSX.Element[][] = [];
+
     const getOptions = () => {
-        const options = WEB_MAPS.map(({ title, id, thumbnail }) => {
-            const isActive = id === activeWebmapId;
+        WEB_MAPS.forEach((data, index) => {
+            const groupIdx = Math.floor(index / 2);
 
-            return (
-                <div key={id} className="flex items-center mb-2">
-                    <div
-                        className={classnames('cursor-pointer border', {
-                            'border-white': isActive,
-                            'border-gray-50': !isActive,
-                            'opacity-40': !isActive,
-                        })}
-                        onClick={onChangeHandler.bind(null, id)}
-                        style={{
-                            height: 62,
-                            width: 62,
-                            background: `url(${thumbnail}) center center`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'cover',
-                        }}
-                    ></div>
+            groups[groupIdx] = groups[groupIdx] || [];
 
-                    <div className="ml-3">
-                        <span className="text-sm">{title}</span>
-                    </div>
-                </div>
+            groups[groupIdx].push(
+                <WebMapOption
+                    key={data.id}
+                    data={data}
+                    isActive={data.id === activeWebmapId}
+                    onClick={onChangeHandler}
+                />
             );
         });
 
-        return <div className="">{options}</div>;
+        return (
+            <div className="flex">
+                {groups.map((elements, idx) => {
+                    return (
+                        <div key={idx} className="mr-4">
+                            {elements}
+                        </div>
+                    );
+                })}
+            </div>
+        );
     };
 
     return (

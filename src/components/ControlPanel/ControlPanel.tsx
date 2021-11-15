@@ -48,7 +48,7 @@ const ControlPanel = () => {
 
             <CloseBtn />
 
-            <div className="flex mt-2">
+            <div className="md:flex mt-2">
                 <PanelConfiguration />
                 <WebMapSelector />
             </div>
