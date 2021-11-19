@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     WEB_MAP_ID_HUMAN_GEO_DARK,
@@ -95,6 +95,54 @@ const WebMapOption: FC<PropsWebMapOption> = ({
     );
 };
 
+const WebMapIdTextInput = () => {
+    const [val, setVal] = useState<string>('');
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setVal(event.target.value);
+    };
+
+    return (
+        <div className="pb-2">
+            <h5 className="text-sm text-gray-200 mb-1">
+                Any ArcGIS Online 2D Web Map
+            </h5>
+
+            <div className="flex items-stretch">
+                <input
+                    type="text"
+                    placeholder="Web Map Item ID"
+                    className="bg-transparent border border-r-0 border-gray-500 p-2 placeholder-opacity-50 text-sm"
+                    value={val}
+                    onChange={handleChange}
+                />
+
+                <div
+                    className={classnames(
+                        'flex justify-center items-center w-10 border border-gray-500',
+                        {
+                            'text-gray-700': val === '',
+                            'text-gray-200': val !== '',
+                            'cursor-pointer': val !== '',
+                        }
+                    )}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="fill-current"
+                        viewBox="0 0 24 24"
+                        height="24"
+                        width="24"
+                    >
+                        <path d="M6 1.773l15 10.23L6 22.226z" />
+                        <path fill="none" d="M0 0h24v24H0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const WebMapSelector = () => {
     const dispatch = useDispatch();
 
@@ -131,6 +179,10 @@ const WebMapSelector = () => {
                         </div>
                     );
                 })}
+
+                <div className="flex items-end ml-2">
+                    <WebMapIdTextInput />
+                </div>
             </div>
         );
     };
