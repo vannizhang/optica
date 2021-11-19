@@ -24,7 +24,7 @@ export const initialUIState: UIState = {
         direction: 'horizontal',
         num: 3,
     },
-    isControlPanelVisible: true,
+    isControlPanelVisible: false,
 };
 
 const slice = createSlice({
