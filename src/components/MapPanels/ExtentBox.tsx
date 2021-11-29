@@ -172,6 +172,7 @@ const ExtentBox: FC<Props> = ({
             height,
             width,
             display: 'block',
+            boxShadow: '0 0 5px 2px rgba(0,0,0,.75)',
         };
     };
 
@@ -182,7 +183,7 @@ const ExtentBox: FC<Props> = ({
     return (
         <div
             ref={containerRef}
-            className="absolute border-2 border-red-500 pointer-events-none"
+            className="absolute border border-white border-opacity-50 pointer-events-none"
             style={getStyle()}
         ></div>
     );
