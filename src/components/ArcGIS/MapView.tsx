@@ -22,6 +22,8 @@ interface Props {
     children?: React.ReactNode;
 }
 
+const ZOOM_STEP_FACTOR = 0.6;
+
 const MapView: React.FC<Props> = ({
     webmapId,
     center,
@@ -72,12 +74,6 @@ const MapView: React.FC<Props> = ({
             view.when(() => {
                 setMapView(view);
             });
-
-            view.on('mouse-wheel', function (event) {
-                // deltaY value is positive when wheel is scrolled up
-                // and it is negative when wheel is scrolled down.
-                console.log(event);
-            });
         } catch (err) {
             console.error(err);
         }
@@ -99,6 +95,36 @@ const MapView: React.FC<Props> = ({
         } catch (err) {
             console.error(err);
         }
+    };
+
+    const canZoomRef = useRef<boolean>(true);
+
+    // the type of the input view is IMapView, setting it to any because need to access the view.mapViewNavigation object, which is a private property,
+    // therefore has to use any as it's type so the IDE won't throw error
+    const addMouseWheelEvent = async (view: any) => {
+        view.on('mouse-wheel', (event: WheelEvent) => {
+            if (!canZoomRef.current) {
+                return;
+            }
+
+            const navigation = view.mapViewNavigation;
+
+            // deltaY value is positive when wheel is scrolled up
+            // and it is negative when wheel is scrolled down.
+            const { deltaY } = event;
+            const scaleFactor = 1 / ZOOM_STEP_FACTOR ** ((1 / 60) * deltaY);
+            const promise = navigation.zoom(scaleFactor);
+
+            if (promise) {
+                canZoomRef.current = false;
+                promise
+                    //   .catch(() => {})
+                    .then(() => {
+                        canZoomRef.current = true;
+                        navigation.end();
+                    });
+            }
+        });
     };
 
     const addWatchEvent = async () => {
@@ -162,6 +188,7 @@ const MapView: React.FC<Props> = ({
     useEffect(() => {
         if (mapView) {
             addWatchEvent();
+            addMouseWheelEvent(mapView);
         }
     }, [mapView]);
 
