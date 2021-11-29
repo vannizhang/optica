@@ -13,7 +13,7 @@ const ScaleIndicator: React.FC<Props> = ({ scale }: Props) => {
 
     return (
         <div
-            className="absolute bottom-0 left-0 right-0 py-1 text-white text-center text-sm"
+            className="absolute bottom-0 left-0 right-0 py-1 text-white text-center text-sm font-medium"
             style={{
                 background: `
                     linear-gradient(

@@ -95,7 +95,7 @@ const MapPanelsContainer = () => {
 
     return (
         <div
-            className={classnames('flex h-screen', {
+            className={classnames('flex h-screen overflow-hidden', {
                 'flex-col': !isHorizontal,
             })}
         >
