@@ -9,6 +9,7 @@ import {
     updateZoomLevels,
     updateExtents,
     extentsSelector,
+    updateScale,
 } from '../../store/reducers/Map';
 import { mapPanelsInfoSelector } from '../../store/reducers/UI';
 import { MapView } from '../ArcGIS';
@@ -74,6 +75,9 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
             extentOnChange={(extent) => {
                 // console.log('extent on change', extent)
                 dispatch(updateExtents(extent, index));
+            }}
+            scaleOnChange={(scale) => {
+                dispatch(updateScale(scale, index));
             }}
         >
             {getExtentBoxes()}

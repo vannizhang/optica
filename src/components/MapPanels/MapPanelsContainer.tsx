@@ -4,6 +4,7 @@ import {
     indexOfActiveMapPanelChanged,
     indexOfActiveMapPanelSelector,
     relativeZoomLevelsSelector,
+    scalesSelector,
     toggleLockRelativeZoomLevels,
     zoomLevelsSelector,
 } from '../../store/reducers/Map';
@@ -11,6 +12,7 @@ import { mapPanelsInfoSelector } from '../../store/reducers/UI';
 import MapPanel from './MapPanel';
 import classnames from 'classnames';
 import ZoomLock from './ZoomLock';
+import ScaleIndicator from './ScaleIndicator';
 
 const MapPanelsContainer = () => {
     const dispatch = useDispatch();
@@ -24,6 +26,8 @@ const MapPanelsContainer = () => {
     // const [ relativeZoomLevels, setRelativeZoomLevels] = useState<number[]>(relativeZoomLevelLookup[0])
 
     const zoomLevels = useSelector(zoomLevelsSelector);
+
+    const scales = useSelector(scalesSelector);
 
     const relativeZoomLevels = useSelector(relativeZoomLevelsSelector);
 
@@ -57,6 +61,8 @@ const MapPanelsContainer = () => {
                         isActivePanel={idxOfActiveMapPanel === i}
                         zoom={zoom}
                     />
+
+                    <ScaleIndicator scale={scales[i]} />
 
                     {shouldShowZoomLock && (
                         <ZoomLock

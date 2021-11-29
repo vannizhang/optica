@@ -17,6 +17,7 @@ interface Props {
     isActiveMapPanel: boolean;
     centerOnChange: (center: MapCenter) => void;
     zoomOnChange: (zoom: number) => void;
+    scaleOnChange: (scale: number) => void;
     extentOnChange: (extent: IExtent) => void;
     children?: React.ReactNode;
 }
@@ -29,6 +30,7 @@ const MapView: React.FC<Props> = ({
     centerOnChange,
     zoomOnChange,
     extentOnChange,
+    scaleOnChange,
     children,
 }: Props) => {
     const mapDivRef = React.useRef<HTMLDivElement>();
@@ -145,6 +147,8 @@ const MapView: React.FC<Props> = ({
                     mapContainerSizeRef.current = containerSize;
                     extentOnChange(mapView.extent);
                 }
+
+                scaleOnChange(mapView.scale);
             });
         } catch (err) {
             console.error(err);

@@ -23,6 +23,7 @@ export type MapState = {
     zoom?: number;
     zoomLevels?: number[];
     relativeZoomLevels?: number[];
+    scales?: number[];
     // extents JSON of each map panel as an array of strings
     extents?: string[];
     webmapId?: string;
@@ -39,6 +40,7 @@ export const initialMapState: MapState = {
     zoom: 10,
     zoomLevels: [10, 12, 14],
     relativeZoomLevels: [-2, 0, 2],
+    scales: [0, 0, 0],
     extents: [],
     webmapId: WEB_MAP_ID_HYBRID,
     isLoadingWebmap: false,
@@ -65,6 +67,9 @@ const slice = createSlice({
         zoomLevelsChanged: (state, action: PayloadAction<number[]>) => {
             state.zoomLevels = action.payload;
         },
+        scalesChanged: (state, action: PayloadAction<number[]>) => {
+            state.scales = action.payload;
+        },
         relativeZoomLevelsChanged: (state, action: PayloadAction<number[]>) => {
             state.relativeZoomLevels = action.payload;
         },
@@ -87,6 +92,7 @@ export const {
     indexOfActiveMapPanelChanged,
     extentsChanged,
     invalidWebmapIdChanged,
+    scalesChanged,
 } = slice.actions;
 
 export const toggleLockRelativeZoomLevels = (mapPanelIndex: number) => (
@@ -176,6 +182,20 @@ export const updateExtents = (extent: IExtent, mapPanelIndex: number) => (
     dispatch(extentsChanged(newExtents));
 };
 
+export const updateScale = (scale: number, mapPanelIndex: number) => (
+    dispatch: StoreDispatch,
+    getState: StoreGetState
+) => {
+    const { Map } = getState();
+    const { scales } = Map;
+
+    const newScales = [...scales];
+
+    newScales[mapPanelIndex] = scale;
+
+    dispatch(scalesChanged(newScales));
+};
+
 export const updateWebmapId = (id: string) => async (
     dispatch: StoreDispatch,
     getState: StoreGetState
@@ -222,6 +242,11 @@ export const extentsSelector = createSelector(
 export const zoomLevelsSelector = createSelector(
     (state: RootState) => state.Map.zoomLevels,
     (zoomLevels) => zoomLevels
+);
+
+export const scalesSelector = createSelector(
+    (state: RootState) => state.Map.scales,
+    (scales) => scales
 );
 
 export const relativeZoomLevelsSelector = createSelector(
