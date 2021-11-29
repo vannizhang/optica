@@ -8,7 +8,12 @@ import {
     WEB_MAP_ID_TOPO,
     WEB_MAP_ID_VIBRANT,
 } from '../../constants/map';
-import { webmapIdChanged, webmapIdSelector } from '../../store/reducers/Map';
+import {
+    isInvalidWebmapIdSelector,
+    updateWebmapId,
+    webmapIdChanged,
+    webmapIdSelector,
+} from '../../store/reducers/Map';
 
 import imagery_thumbnail from '../../static/imagery.jpg';
 import hybrid_thumbnail from '../../static/hybrid.jpg';
@@ -96,16 +101,26 @@ const WebMapOption: FC<PropsWebMapOption> = ({
 };
 
 const WebMapIdTextInput = () => {
+    const dispatch = useDispatch();
+
     const [val, setVal] = useState<string>('');
+
+    const isInvalidWebmapId = useSelector(isInvalidWebmapIdSelector);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setVal(event.target.value);
     };
 
+    const onClickHandler = () => {
+        dispatch(updateWebmapId(val));
+    };
+
     return (
         <div className="pb-2">
             <h5 className="text-sm text-gray-200 mb-1">
-                Any ArcGIS Online 2D Web Map
+                {isInvalidWebmapId
+                    ? 'Invalid Item Id'
+                    : 'Any ArcGIS Online 2D Web Map'}
             </h5>
 
             <div className="flex items-stretch">
@@ -124,8 +139,10 @@ const WebMapIdTextInput = () => {
                             'text-gray-700': val === '',
                             'text-gray-200': val !== '',
                             'cursor-pointer': val !== '',
+                            'pointer-events-none': val === '',
                         }
                     )}
+                    onClick={onClickHandler}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

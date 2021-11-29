@@ -87,6 +87,9 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "@esri/arcgis-rest-auth": "^3.0.0",
+    "@esri/arcgis-rest-portal": "^3.4.3",
+    "@esri/arcgis-rest-request": "^3.0.0",
     "@reduxjs/toolkit": "^1.6.0",
     "axios": "^0.21.1",
     "classnames": "^2.2.6",

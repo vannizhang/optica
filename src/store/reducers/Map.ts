@@ -10,6 +10,8 @@ import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
 import IExtent from 'esri/geometry/Extent';
 
+import { getItem } from '@esri/arcgis-rest-portal';
+
 export type MapCenter = {
     lat?: number;
     lon?: number;
@@ -24,6 +26,8 @@ export type MapState = {
     // extents JSON of each map panel as an array of strings
     extents?: string[];
     webmapId?: string;
+    isLoadingWebmap?: boolean;
+    isInvalidWebmapId?: boolean;
 };
 
 export const initialMapState: MapState = {
@@ -37,6 +41,8 @@ export const initialMapState: MapState = {
     relativeZoomLevels: [-2, 0, 2],
     extents: [],
     webmapId: WEB_MAP_ID_HYBRID,
+    isLoadingWebmap: false,
+    isInvalidWebmapId: false,
 };
 
 const slice = createSlice({
@@ -45,6 +51,10 @@ const slice = createSlice({
     reducers: {
         webmapIdChanged: (state, action: PayloadAction<string>) => {
             state.webmapId = action.payload;
+            state.isInvalidWebmapId = false;
+        },
+        invalidWebmapIdChanged: (state, action: PayloadAction<boolean>) => {
+            state.isInvalidWebmapId = action.payload;
         },
         mapCenterChanged: (state, action: PayloadAction<MapCenter>) => {
             state.center = action.payload;
@@ -76,6 +86,7 @@ export const {
     relativeZoomLevelsChanged,
     indexOfActiveMapPanelChanged,
     extentsChanged,
+    invalidWebmapIdChanged,
 } = slice.actions;
 
 export const toggleLockRelativeZoomLevels = (mapPanelIndex: number) => (
@@ -165,6 +176,34 @@ export const updateExtents = (extent: IExtent, mapPanelIndex: number) => (
     dispatch(extentsChanged(newExtents));
 };
 
+export const updateWebmapId = (id: string) => async (
+    dispatch: StoreDispatch,
+    getState: StoreGetState
+) => {
+    try {
+        const itemData = await getItem(id);
+
+        if (itemData.type !== 'Web Map') {
+            dispatch(setInvalidWebmapIdToTrue());
+        } else {
+            dispatch(webmapIdChanged(id));
+        }
+    } catch (err) {
+        dispatch(setInvalidWebmapIdToTrue());
+    }
+};
+
+const setInvalidWebmapIdToTrue = () => async (
+    dispatch: StoreDispatch,
+    getState: StoreGetState
+) => {
+    dispatch(invalidWebmapIdChanged(true));
+
+    setTimeout(() => {
+        dispatch(invalidWebmapIdChanged(false));
+    }, 5000);
+};
+
 export const webmapIdSelector = createSelector(
     (state: RootState) => state.Map.webmapId,
     (webmapId) => webmapId
@@ -193,6 +232,11 @@ export const relativeZoomLevelsSelector = createSelector(
 export const indexOfActiveMapPanelSelector = createSelector(
     (state: RootState) => state.Map.indexOfActiveMapPanel,
     (indexOfActiveMapPanel) => indexOfActiveMapPanel
+);
+
+export const isInvalidWebmapIdSelector = createSelector(
+    (state: RootState) => state.Map.isInvalidWebmapId,
+    (isInvalidWebmapId) => isInvalidWebmapId
 );
 
 export default reducer;
