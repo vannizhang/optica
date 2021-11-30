@@ -7,11 +7,13 @@ import { loadModules } from 'esri-loader';
 import { useSelector } from 'react-redux';
 import {
     extentsSelector,
-    relativeZoomLevelsSelector,
-    zoomLevelsSelector,
+    // relativeZoomLevelsSelector,
+    // zoomLevelsSelector,
 } from '../../store/reducers/Map';
 // import { usePrevious } from '../../hooks/usePrevious';
 import IwatchUtils from 'esri/core/watchUtils';
+import classnames from 'classnames';
+import { mapPanelsInfoSelector } from '../../store/reducers/UI';
 
 type IExtent = {
     xmin: number;
@@ -47,7 +49,7 @@ const ExtentBox: FC<Props> = ({
 
     // const relativeZoomLevels = useSelector(relativeZoomLevelsSelector);
 
-    // const zoomLevels = useSelector(zoomLevelsSelector);
+    const { direction } = useSelector(mapPanelsInfoSelector);
 
     const extentOfTargetMapRef = useRef<string>();
 
@@ -184,7 +186,17 @@ const ExtentBox: FC<Props> = ({
     return (
         <div
             ref={containerRef}
-            className="absolute border border-white border-opacity-50 pointer-events-none arrow-indicator arrow-left"
+            className={classnames(
+                'absolute border border-white border-opacity-50 pointer-events-none',
+                {
+                    'arrow-horizontal': direction === 'horizontal',
+                    'arrow-vertical': direction === 'vertical',
+                    'to-left': indexOfTargetMap < indexOfContainerMap,
+                    'to-right': indexOfTargetMap > indexOfContainerMap,
+                    'to-top': indexOfTargetMap < indexOfContainerMap,
+                    'to-bottom': indexOfTargetMap > indexOfContainerMap,
+                }
+            )}
             style={getStyle()}
         ></div>
     );
