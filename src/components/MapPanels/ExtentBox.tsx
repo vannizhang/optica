@@ -1,4 +1,5 @@
 import React, { CSSProperties, FC, useEffect, useRef, useState } from 'react';
+import './ExtentBox.css';
 
 import IMapView from 'esri/views/MapView';
 import IPoint from 'esri/geometry/Point';
@@ -183,7 +184,7 @@ const ExtentBox: FC<Props> = ({
     return (
         <div
             ref={containerRef}
-            className="absolute border border-white border-opacity-50 pointer-events-none"
+            className="absolute border border-white border-opacity-50 pointer-events-none arrow-indicator arrow-left"
             style={getStyle()}
         ></div>
     );
