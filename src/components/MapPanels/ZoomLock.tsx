@@ -5,26 +5,24 @@ import React from 'react';
 const LockedIcon: JSX.Element = (
     <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
+        viewBox="0 0 16 16"
+        width="16"
+        height="16"
         className="fill-current"
     >
-        <path d="M12 14h1v1h-1zm-1 6h1v-1h1v-1h-1v-1h1v-1h-1v-1h-1zM6 7a6 6 0 0 1 12 0v3h1.5a1.504 1.504 0 0 1 1.5 1.5v10a1.504 1.504 0 0 1-1.5 1.5h-15A1.504 1.504 0 0 1 3 21.5v-10A1.504 1.504 0 0 1 4.5 10H6zm12 4H4.5a.506.506 0 0 0-.5.5v10a.506.506 0 0 0 .5.5h15a.506.506 0 0 0 .5-.5v-10a.506.506 0 0 0-.5-.5zm-3-4a3 3 0 0 0-6 0v3h6zm-8 3h1V7a4 4 0 0 1 8 0v3h1V7A5 5 0 0 0 7 7z" />
-        <path fill="none" d="M0 0h24v24H0z" />
+        <path d="M8 1a4.012 4.012 0 0 0-4 4v2H3a1.003 1.003 0 0 0-1 1v7a1.003 1.003 0 0 0 1 1h10a1.003 1.003 0 0 0 1-1V8a1.003 1.003 0 0 0-1-1h-1V5a4.012 4.012 0 0 0-4-4zM5 5a3 3 0 0 1 6 0v2h-1V5a2 2 0 0 0-4 0v2H5zm4 2H7V5a1 1 0 0 1 2 0zm4 1v7H3V8zm-5 2h1v1H8v1h1v1H8v1H7V9h1z" />
     </svg>
 );
 
 const UnlockedIcon: JSX.Element = (
     <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
+        viewBox="0 0 16 16"
+        width="16"
+        height="16"
         className="fill-current"
     >
-        <path d="M1.5 10A1.504 1.504 0 0 0 0 11.5v10A1.504 1.504 0 0 0 1.5 23h15a1.504 1.504 0 0 0 1.5-1.5v-10a1.504 1.504 0 0 0-1.5-1.5H15V6.5c0-2.04 1.346-3.7 3-3.7 1.71 0 3 1.59 3 3.7V8h3V6.5A6.272 6.272 0 0 0 18 0a6.272 6.272 0 0 0-6 6.5V10zM13 6.5A5.274 5.274 0 0 1 18 1a5.274 5.274 0 0 1 5 5.5V7h-1v-.5c0-2.68-1.72-4.7-4-4.7-2.206 0-4 2.108-4 4.7V10h-1zm2 4.5h1.5a.506.506 0 0 1 .5.5v10a.506.506 0 0 1-.5.5h-15a.506.506 0 0 1-.5-.5v-10a.506.506 0 0 1 .5-.5zm-6 9H8v-5h1v1h1v1H9v1h1v1H9zm1-5H9v-1h1z" />
-        <path fill="none" d="M0 0h24v24H0z" />
+        <path d="M16 6V4a4 4 0 1 0-8 0v3H2a1.003 1.003 0 0 0-1 1v7a1.003 1.003 0 0 0 1 1h10a1.003 1.003 0 0 0 1-1V8a1.003 1.003 0 0 0-1-1h-1V4a1 1 0 0 1 2 0v2zm-4 2v7H2V8zm0-6a2 2 0 0 0-2 2v3H9V4a3 3 0 1 1 6 0v1h-1V4a2 2 0 0 0-2-2zM7 14H6V9h1v1h1v1H7v1h1v1H7z" />
     </svg>
 );
 
@@ -34,7 +32,7 @@ type Props = {
     onClick: () => void;
 };
 
-const SIZE = 60;
+const SIZE = 40;
 
 const ZoomLock: React.FC<Props> = ({
     placeOnLeftSide,
@@ -61,8 +59,8 @@ const ZoomLock: React.FC<Props> = ({
             <div
                 className="absolute"
                 style={{
-                    top: placeOnLeftSide ? 'unset' : 4,
-                    right: placeOnLeftSide ? 4 : 'unset',
+                    top: placeOnLeftSide ? 'unset' : 2,
+                    right: placeOnLeftSide ? 2 : 'unset',
                 }}
             >
                 {isUnlocked ? UnlockedIcon : LockedIcon}

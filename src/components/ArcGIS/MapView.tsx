@@ -8,7 +8,7 @@ import IExtent from 'esri/geometry/Extent';
 import IwatchUtils from 'esri/core/watchUtils';
 import { MapCenter } from '../../store/reducers/Map';
 
-loadCss();
+loadCss('https://js.arcgis.com/4.21/esri/themes/dark/main.css');
 
 interface Props {
     webmapId: string;
@@ -68,6 +68,12 @@ const MapView: React.FC<Props> = ({
                 navigation: {
                     mouseWheelZoomEnabled: false,
                     browserTouchPanEnabled: false,
+                },
+                constraints: {
+                    rotationEnabled: false,
+                },
+                ui: {
+                    components: [],
                 },
             });
 
