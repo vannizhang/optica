@@ -34,6 +34,8 @@ type Props = {
     onClick: () => void;
 };
 
+const SIZE = 60;
+
 const ZoomLock: React.FC<Props> = ({
     placeOnLeftSide,
     isUnlocked,
@@ -41,12 +43,16 @@ const ZoomLock: React.FC<Props> = ({
 }: Props) => {
     return (
         <div
-            className="absolute bg-white text-black opacity-90 z-10 p-2 cursor-pointer flex justify-center"
+            className="absolute bg-white text-black opacity-90 z-10 p-2 cursor-pointer flex"
             style={{
-                bottom: -30,
-                left: placeOnLeftSide ? 0 : 'calc(100% - 30px)',
-                width: 60,
-                height: 60,
+                bottom: -(SIZE / 2),
+                left: placeOnLeftSide
+                    ? -(SIZE / 2)
+                    : `calc(100% - ${SIZE / 2}px)`,
+                justifyContent: placeOnLeftSide ? 'flex-end' : 'center',
+                alignItems: placeOnLeftSide ? 'center' : 'flex-start',
+                width: SIZE,
+                height: SIZE,
                 borderRadius: '50%',
                 boxShadow: '0 0 10px #000',
             }}
@@ -55,7 +61,8 @@ const ZoomLock: React.FC<Props> = ({
             <div
                 className="absolute"
                 style={{
-                    top: 4,
+                    top: placeOnLeftSide ? 'unset' : 4,
+                    right: placeOnLeftSide ? 4 : 'unset',
                 }}
             >
                 {isUnlocked ? UnlockedIcon : LockedIcon}
