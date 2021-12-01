@@ -11,6 +11,7 @@ import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 import IExtent from 'esri/geometry/Extent';
 
 import { getItem } from '@esri/arcgis-rest-portal';
+import { setHashParam } from '../../utils/URLHashParams';
 
 export type MapCenter = {
     lat?: number;
@@ -166,6 +167,8 @@ export const updateZoomLevels = (zoom: number, mapPanelIndex: number) => (
     // console.log(zoomLevels, newZoomeLevels);
 
     dispatch(zoomLevelsChanged(newZoomeLevels));
+
+    setHashParam('zoom', newZoomeLevels.join(','));
 };
 
 export const updateExtents = (extent: IExtent, mapPanelIndex: number) => (
@@ -207,6 +210,7 @@ export const updateWebmapId = (id: string) => async (
             dispatch(setInvalidWebmapIdToTrue());
         } else {
             dispatch(webmapIdChanged(id));
+            setHashParam('webmapId', id);
         }
     } catch (err) {
         dispatch(setInvalidWebmapIdToTrue());

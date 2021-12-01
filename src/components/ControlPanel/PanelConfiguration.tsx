@@ -4,6 +4,7 @@ import {
     MapPanelsDirection,
     mapPanelsInfoChanged,
     mapPanelsInfoSelector,
+    updatePanelsLayout,
 } from '../../store/reducers/UI';
 import classnames from 'classnames';
 
@@ -21,7 +22,7 @@ const PanelIcon: FC<PanelIconProps> = ({ direction, num }: PanelIconProps) => {
         panelInfo.direction === direction && panelInfo.num === num;
 
     const onClickHandler = () => {
-        dispatch(mapPanelsInfoChanged({ direction, num }));
+        dispatch(updatePanelsLayout({ direction, num }));
     };
 
     const getRect = () => {

@@ -164,7 +164,7 @@ const WebMapSelector = () => {
     const dispatch = useDispatch();
 
     const onChangeHandler = (id: string) => {
-        dispatch(webmapIdChanged(id));
+        dispatch(updateWebmapId(id));
     };
 
     const activeWebmapId = useSelector(webmapIdSelector);

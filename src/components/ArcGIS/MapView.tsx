@@ -7,6 +7,7 @@ import IPoint from 'esri/geometry/Point';
 import IExtent from 'esri/geometry/Extent';
 import IwatchUtils from 'esri/core/watchUtils';
 import { MapCenter } from '../../store/reducers/Map';
+import { setHashParam } from '../../utils/URLHashParams';
 
 loadCss('https://js.arcgis.com/4.21/esri/themes/dark/main.css');
 
@@ -169,6 +170,12 @@ const MapView: React.FC<Props> = ({
                 if (isActiveMapRef.current) {
                     extentOnChange(mapView.extent);
                     zoomOnChange(mapView.zoom);
+
+                    const { longitude, latitude } = mapView.center;
+                    setHashParam(
+                        '@',
+                        `${longitude.toFixed(3)},${latitude.toFixed(3)}`
+                    );
                 }
 
                 const containerSize = `${mapView.width}#${mapView.height}`;

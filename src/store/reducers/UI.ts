@@ -4,6 +4,7 @@ import {
     PayloadAction,
     // createAsyncThunk
 } from '@reduxjs/toolkit';
+import { setHashParam } from '../../utils/URLHashParams';
 
 import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
@@ -46,6 +47,15 @@ export const {
     mapPanelsInfoChanged,
     isControlPanelVisibleToggled,
 } = slice.actions;
+
+export const updatePanelsLayout = (layout: MapPanelsInfo) => (
+    dispatch: StoreDispatch,
+    getState: StoreGetState
+) => {
+    const { direction, num } = layout;
+    setHashParam('layout', `${direction},${num}`);
+    dispatch(mapPanelsInfoChanged(layout));
+};
 
 export const mapPanelsInfoSelector = createSelector(
     (state: RootState) => state.UI.mapPanelsInfo,
