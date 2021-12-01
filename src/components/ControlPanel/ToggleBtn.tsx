@@ -1,14 +1,23 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { isControlPanelVisibleToggled } from '../../store/reducers/UI';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    isControlPanelVisibleSelector,
+    isControlPanelVisibleToggled,
+} from '../../store/reducers/UI';
 
 const ToggleBtn = () => {
     const dispatch = useDispatch();
+
+    const isVisible = useSelector(isControlPanelVisibleSelector);
 
     const onClickHandler = () => {
         dispatch(isControlPanelVisibleToggled());
         // console.log('foo')
     };
+
+    if (isVisible) {
+        return null;
+    }
 
     return (
         <>

@@ -41,11 +41,20 @@ const MapPanelsContainer = () => {
 
             const shouldShowZoomLock = i < num - 1;
 
+            const shouldShowBorder = i === 1;
+
             const classNames = classnames('relative', {
                 'h-1/2': !isHorizontal && num === 2,
                 'h-1/3': !isHorizontal && num === 3,
                 'w-1/2': isHorizontal && num === 2,
                 'w-1/3': isHorizontal && num === 3,
+                'border-l': shouldShowBorder && direction === 'horizontal',
+                'border-r':
+                    shouldShowBorder && direction === 'horizontal' && num > 2,
+                'border-t': shouldShowBorder && direction === 'vertical',
+                'border-b':
+                    shouldShowBorder && direction === 'vertical' && num > 2,
+                'border-white border-opacity-50': shouldShowBorder,
             });
 
             panels.push(
@@ -55,6 +64,9 @@ const MapPanelsContainer = () => {
                     onMouseEnter={() => {
                         dispatch(indexOfActiveMapPanelChanged(i));
                     }}
+                    // style={{
+                    //     'boxShadow': '-2px 0 5px 5px rgba(0,0,0,.75)'
+                    // }}
                 >
                     <MapPanel
                         index={i}

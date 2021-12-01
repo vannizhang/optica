@@ -126,7 +126,7 @@ const WebMapIdTextInput = () => {
             <div className="flex items-stretch">
                 <input
                     type="text"
-                    placeholder="Web Map Item ID"
+                    placeholder="Web Map link"
                     className="bg-transparent border border-r-0 border-gray-500 p-2 placeholder-opacity-50 text-sm"
                     value={val}
                     onChange={handleChange}
@@ -188,16 +188,18 @@ const WebMapSelector = () => {
         });
 
         return (
-            <div className="flex">
-                {groups.map((elements, idx) => {
-                    return (
-                        <div key={idx} className="mr-4">
-                            {elements}
-                        </div>
-                    );
-                })}
+            <div className="md:flex">
+                <div className="flex">
+                    {groups.map((elements, idx) => {
+                        return (
+                            <div key={idx} className="mr-4">
+                                {elements}
+                            </div>
+                        );
+                    })}
+                </div>
 
-                <div className="flex items-end ml-2">
+                <div className="flex items-end mt-2 md:mt-0 md:ml-2">
                     <WebMapIdTextInput />
                 </div>
             </div>

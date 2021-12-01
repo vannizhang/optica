@@ -1,9 +1,14 @@
+@import url('./calcite-animations.css');
 @import url('./fonts.css');
 @import url('./calcite.css');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    background: #000;
+}
 
 #root .esri-ui .esri-attribution {
     display: none;

@@ -75,6 +75,9 @@ const MapView: React.FC<Props> = ({
                 ui: {
                     components: [],
                 },
+                background: {
+                    color: '#000',
+                },
             });
 
             view.when(() => {

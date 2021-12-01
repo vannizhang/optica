@@ -87,9 +87,9 @@ const PanelIconsData: PanelIconProps[] = [
 
 const PanelConfiguration = () => {
     return (
-        <div>
+        <div className="md:border-r border-white border-opacity-30 md:mr-7">
             <h5 className="mb-2">Panel configuration</h5>
-            <div className="cursor-pointer flex flex-wrap w-64">
+            <div className="cursor-pointer flex flex-wrap w-60">
                 {PanelIconsData.map(({ direction, num }) => {
                     return (
                         <PanelIcon
