@@ -173,7 +173,7 @@ const MapView: React.FC<Props> = ({
 
                     const { longitude, latitude } = mapView.center;
                     setHashParam(
-                        '@',
+                        'center',
                         `${longitude.toFixed(3)},${latitude.toFixed(3)}`
                     );
                 }
