@@ -22,6 +22,7 @@ import human_dark_light_thumbnail from '../../static/human-geo-dark.jpg';
 import topo_thumbnail from '../../static/topo.jpg';
 import vibrant_thumbnail from '../../static/vibrant.png';
 import classnames from 'classnames';
+import { decodeQueryString } from '@esri/arcgis-rest-request';
 
 type WebMapInfo = {
     title: string;
@@ -100,6 +101,18 @@ const WebMapOption: FC<PropsWebMapOption> = ({
     );
 };
 
+const getItemId = (url: string) => {
+    if (url.indexOf('?') === -1) {
+        return '';
+    }
+
+    const [path, search] = url.split('?');
+
+    const param = decodeQueryString(search);
+
+    return param.webmap || param.id || '';
+};
+
 const WebMapIdTextInput = () => {
     const dispatch = useDispatch();
 
@@ -112,7 +125,9 @@ const WebMapIdTextInput = () => {
     };
 
     const onClickHandler = () => {
-        dispatch(updateWebmapId(val));
+        const itemId = getItemId(val);
+
+        dispatch(updateWebmapId(itemId));
     };
 
     return (

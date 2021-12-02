@@ -8,7 +8,7 @@
     pointer-events: none;
     border-width: 10px;
     margin-top: -10px;
-    opacity: .75;
+    opacity: .9;
 }
 
 .arrow-horizontal.to-right:after {
@@ -31,7 +31,7 @@
     pointer-events: none;
     border-width: 10px;
     margin-left: -10px;
-    opacity: .75;
+    opacity: .9;
 }
 
 .arrow-vertical.to-top:after  {

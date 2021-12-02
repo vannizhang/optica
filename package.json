@@ -1,7 +1,8 @@
 {
-  "name": "react-redux-boilerplate",
+  "name": "living-atlas-optica",
   "version": "1.0.0",
-  "description": "Start React+Redux project with TypeScript in an easier and faster way",
+  "title": "Living Atlas Optica",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest --passWithNoTests",

@@ -6,6 +6,7 @@ import IWebMap from 'esri/WebMap';
 import IPoint from 'esri/geometry/Point';
 import IExtent from 'esri/geometry/Extent';
 import IwatchUtils from 'esri/core/watchUtils';
+import IZoom from 'esri/widgets/Zoom';
 import { MapCenter } from '../../store/reducers/Map';
 import { setHashParam } from '../../utils/URLHashParams';
 
@@ -47,12 +48,13 @@ const MapView: React.FC<Props> = ({
     const [mapView, setMapView] = React.useState<IMapView>(null);
 
     const initMapView = async () => {
-        type Modules = [typeof IMapView, typeof IWebMap];
+        type Modules = [typeof IMapView, typeof IWebMap, typeof IZoom];
 
         try {
-            const [MapView, WebMap] = await (loadModules([
+            const [MapView, WebMap, Zoom] = await (loadModules([
                 'esri/views/MapView',
                 'esri/WebMap',
+                'esri/widgets/Zoom',
             ]) as Promise<Modules>);
 
             const { lon, lat } = center;
@@ -80,6 +82,12 @@ const MapView: React.FC<Props> = ({
                     color: '#000',
                 },
             });
+
+            const zoomWidget = new Zoom({
+                view,
+            });
+
+            view.ui.add(zoomWidget, 'top-right');
 
             view.when(() => {
                 setMapView(view);
