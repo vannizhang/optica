@@ -9,7 +9,7 @@ const Title = () => {
     return (
         <div className="text-xl">
             <h5>
-                Living Atlas{' '}
+                {/* Living Atlas{' '} */}
                 <span className="font-medium text-white">Optica</span>
             </h5>
         </div>
