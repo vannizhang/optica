@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     WEB_MAP_ID_HUMAN_GEO_DARK,
@@ -13,6 +13,7 @@ import {
     updateWebmapId,
     webmapIdChanged,
     webmapIdSelector,
+    webmapRequestErrorSelector,
 } from '../../store/reducers/Map';
 
 import imagery_thumbnail from '../../static/imagery.jpg';
@@ -23,6 +24,8 @@ import topo_thumbnail from '../../static/topo.jpg';
 import vibrant_thumbnail from '../../static/vibrant.png';
 import classnames from 'classnames';
 import { decodeQueryString } from '@esri/arcgis-rest-request';
+import { EsriOAuthContext } from '../../contexts/EsriOAuthProvider';
+import { webMercatorToGeographic } from 'esri/geometry/support/webMercatorUtils';
 
 type WebMapInfo = {
     title: string;
@@ -103,7 +106,7 @@ const WebMapOption: FC<PropsWebMapOption> = ({
 
 const getItemId = (url: string) => {
     if (url.indexOf('?') === -1) {
-        return '';
+        return url;
     }
 
     const [path, search] = url.split('?');
@@ -118,7 +121,19 @@ const WebMapIdTextInput = () => {
 
     const [val, setVal] = useState<string>('');
 
+    const { credential, signIn } = useContext(EsriOAuthContext);
+
     const isInvalidWebmapId = useSelector(isInvalidWebmapIdSelector);
+
+    const webmapRequestError = useSelector(webmapRequestErrorSelector);
+
+    const getHeaderText = () => {
+        if (isInvalidWebmapId || webmapRequestError) {
+            return 'Invalid Item Id';
+        }
+
+        return 'Any ArcGIS Online 2D Web Map';
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setVal(event.target.value);
@@ -130,18 +145,25 @@ const WebMapIdTextInput = () => {
         dispatch(updateWebmapId(itemId));
     };
 
+    useEffect(() => {
+        // sign in if get "You do not have permissions to access this resource" error
+        if (
+            webmapRequestError &&
+            webmapRequestError.code === 'GWM_0003' &&
+            !credential
+        ) {
+            signIn();
+        }
+    }, [webmapRequestError]);
+
     return (
         <div className="pb-2">
-            <h5 className="text-sm text-gray-200 mb-1">
-                {isInvalidWebmapId
-                    ? 'Invalid Item Id'
-                    : 'Any ArcGIS Online 2D Web Map'}
-            </h5>
+            <h5 className="text-sm text-gray-200 mb-1">{getHeaderText()}</h5>
 
             <div className="flex items-stretch">
                 <input
                     type="text"
-                    placeholder="Web Map link"
+                    placeholder="Web Map link or Item Id"
                     className="bg-transparent border border-r-0 border-gray-500 p-2 placeholder-opacity-50 text-sm"
                     value={val}
                     onChange={handleChange}

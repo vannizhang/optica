@@ -12,10 +12,16 @@ import IExtent from 'esri/geometry/Extent';
 
 import { getItem } from '@esri/arcgis-rest-portal';
 import { setHashParam } from '../../utils/URLHashParams';
+import { getUserSession } from '../../utils/esri-oauth';
 
 export type MapCenter = {
     lat?: number;
     lon?: number;
+};
+
+export type RequestError = {
+    code?: string;
+    message?: string;
 };
 
 export type MapState = {
@@ -30,6 +36,7 @@ export type MapState = {
     webmapId?: string;
     isLoadingWebmap?: boolean;
     isInvalidWebmapId?: boolean;
+    webmapRequestError?: RequestError;
 };
 
 export const initialMapState: MapState = {
@@ -45,7 +52,7 @@ export const initialMapState: MapState = {
     extents: [],
     webmapId: WEB_MAP_ID_HYBRID,
     isLoadingWebmap: false,
-    isInvalidWebmapId: false,
+    webmapRequestError: null,
 };
 
 const slice = createSlice({
@@ -80,6 +87,12 @@ const slice = createSlice({
         ) => {
             state.indexOfActiveMapPanel = action.payload;
         },
+        webmapRequestErrorReceived: (
+            state,
+            action: PayloadAction<RequestError>
+        ) => {
+            state.webmapRequestError = action.payload;
+        },
     },
 });
 
@@ -94,6 +107,7 @@ export const {
     extentsChanged,
     invalidWebmapIdChanged,
     scalesChanged,
+    webmapRequestErrorReceived,
 } = slice.actions;
 
 export const toggleLockRelativeZoomLevels = (mapPanelIndex: number) => (
@@ -204,7 +218,9 @@ export const updateWebmapId = (id: string) => async (
     getState: StoreGetState
 ) => {
     try {
-        const itemData = await getItem(id);
+        const itemData = await getItem(id, {
+            authentication: getUserSession(),
+        });
 
         if (itemData.type !== 'Web Map') {
             dispatch(setInvalidWebmapIdToTrue());
@@ -213,7 +229,12 @@ export const updateWebmapId = (id: string) => async (
             setHashParam('webmapId', id);
         }
     } catch (err) {
-        dispatch(setInvalidWebmapIdToTrue());
+        console.log(err);
+        const requestError: RequestError = {
+            code: err.code || '',
+            message: err.message || '',
+        };
+        dispatch(setWebmapRequestError(requestError));
     }
 };
 
@@ -225,6 +246,17 @@ const setInvalidWebmapIdToTrue = () => async (
 
     setTimeout(() => {
         dispatch(invalidWebmapIdChanged(false));
+    }, 5000);
+};
+
+const setWebmapRequestError = (error: RequestError) => async (
+    dispatch: StoreDispatch,
+    getState: StoreGetState
+) => {
+    dispatch(webmapRequestErrorReceived(error));
+
+    setTimeout(() => {
+        dispatch(webmapRequestErrorReceived(null));
     }, 5000);
 };
 
@@ -266,6 +298,11 @@ export const indexOfActiveMapPanelSelector = createSelector(
 export const isInvalidWebmapIdSelector = createSelector(
     (state: RootState) => state.Map.isInvalidWebmapId,
     (isInvalidWebmapId) => isInvalidWebmapId
+);
+
+export const webmapRequestErrorSelector = createSelector(
+    (state: RootState) => state.Map.webmapRequestError,
+    (webmapRequestError) => webmapRequestError
 );
 
 export default reducer;
