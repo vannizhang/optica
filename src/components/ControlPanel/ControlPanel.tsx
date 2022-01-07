@@ -4,6 +4,7 @@ import { isControlPanelVisibleToggled } from '../../store/reducers/UI';
 import PanelConfiguration from './PanelConfiguration';
 import WebMapSelector from './WebMapSelector';
 import useOnClickOutside from '../../hooks/useOnClickOutside';
+import OAuthControl from './OAuthControl';
 
 const Title = () => {
     return (
@@ -70,6 +71,8 @@ const ControlPanel = () => {
             <Title />
 
             <CloseBtn />
+
+            <OAuthControl />
 
             <div className="md:flex mt-6">
                 <PanelConfiguration />
