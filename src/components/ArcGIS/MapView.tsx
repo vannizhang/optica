@@ -17,6 +17,7 @@ interface Props {
     center: MapCenter;
     zoom: number;
     isActiveMapPanel: boolean;
+    shouldHideAttribution: boolean;
     centerOnChange: (center: MapCenter) => void;
     zoomOnChange: (zoom: number) => void;
     scaleOnChange: (scale: number) => void;
@@ -31,6 +32,7 @@ const MapView: React.FC<Props> = ({
     center,
     zoom,
     isActiveMapPanel,
+    shouldHideAttribution,
     centerOnChange,
     zoomOnChange,
     extentOnChange,
@@ -55,6 +57,7 @@ const MapView: React.FC<Props> = ({
                 'esri/views/MapView',
                 'esri/WebMap',
                 'esri/widgets/Zoom',
+                // 'esri/widgets/Attribution'
             ]) as Promise<Modules>);
 
             const { lon, lat } = center;
@@ -76,7 +79,7 @@ const MapView: React.FC<Props> = ({
                     rotationEnabled: false,
                 },
                 ui: {
-                    components: [],
+                    components: shouldHideAttribution ? [] : ['attribution'],
                 },
                 background: {
                     color: '#000',

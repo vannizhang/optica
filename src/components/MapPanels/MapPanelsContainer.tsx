@@ -72,6 +72,7 @@ const MapPanelsContainer = () => {
                         index={i}
                         isActivePanel={idxOfActiveMapPanel === i}
                         zoom={zoom}
+                        shouldHideAttribution={i < num - 1}
                     />
 
                     <ScaleIndicator scale={scales[i]} />

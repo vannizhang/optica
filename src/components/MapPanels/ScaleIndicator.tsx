@@ -13,11 +13,11 @@ const ScaleIndicator: React.FC<Props> = ({ scale }: Props) => {
 
     return (
         <div
-            className="absolute bottom-0 left-0 right-0 py-1 text-white text-center italic text-sm font-medium"
+            className="absolute top-0 left-0 right-0 py-1 text-white text-center italic text-sm font-medium"
             style={{
                 background: `
                     linear-gradient(
-                        to top,
+                        to bottom,
                         rgba(0, 0, 0, 1) 0%,
                         rgba(0, 0, 0, .1) 80%,
                         rgba(0, 0, 0, 0) 100%)
@@ -28,6 +28,8 @@ const ScaleIndicator: React.FC<Props> = ({ scale }: Props) => {
             1:{numberFns.numberWithCommas(+scale.toFixed())}
         </div>
     );
+
+    // return null;
 };
 
 export default ScaleIndicator;

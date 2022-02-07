@@ -19,9 +19,15 @@ type Props = {
     isActivePanel: boolean;
     zoom: number;
     index: number;
+    shouldHideAttribution: boolean;
 };
 
-const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
+const MapPanel: React.FC<Props> = ({
+    isActivePanel,
+    zoom,
+    index,
+    shouldHideAttribution,
+}: Props) => {
     const dispatch = useDispatch();
 
     const webmapId = useSelector(webmapIdSelector);
@@ -66,6 +72,7 @@ const MapPanel: React.FC<Props> = ({ isActivePanel, zoom, index }: Props) => {
             center={center}
             zoom={zoom}
             isActiveMapPanel={isActivePanel}
+            shouldHideAttribution={shouldHideAttribution}
             centerOnChange={(center: MapCenter) => {
                 dispatch(mapCenterChanged(center));
             }}
